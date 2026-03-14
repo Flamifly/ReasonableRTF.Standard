@@ -35,7 +35,7 @@ RtfToTextConverter converter = new RtfToTextConverter();
 // 2. Load the RTF data (e.g., from a file) and convert
 RtfResult result = converter.Convert(File.ReadAllBytes(Context.Path));
 
-if (result.Error == RtfError.None)
+if (result.Error == RtfError.OK)
 {
     // Conversion was successful
     string plainText = result.Text;
@@ -61,7 +61,7 @@ The `RtfResult` object provides full details about the conversion process, ensur
 | Property | Type | Description |
 | --- | --- | --- |
 | `Text` | `string` | The converted plain text. |
-| `Error` | `RtfError` | The error code. This will be `RtfError.None` upon successful conversion. |
+| `Error` | `RtfError` | The error code. This will be `RtfError.OK` upon successful conversion. |
 | `BytePositionOfError` | `int` | The approximate position in the data stream where the error occurred, or `-1` if no error. |
 | `Exception` | `Exception?` | The caught exception, or `null` if no exception occurred during conversion. |
 

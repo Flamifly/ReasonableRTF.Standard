@@ -27,6 +27,9 @@ using ReasonableRTF.Enums;
 namespace ReasonableRTF.Models
 {
     // TODO: This is janky, maybe just let people use a custom symbol list? On the other hand this is way more convenient...
+    /// <summary>
+    /// The Options for the Conversion in <see cref="RtfToTextConverter"/>.
+    /// </summary>
     public sealed class RtfToTextConverterOptions
     {
         /// <summary>

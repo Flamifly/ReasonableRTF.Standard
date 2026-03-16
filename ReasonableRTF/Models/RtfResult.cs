@@ -27,8 +27,19 @@ using System.Globalization;
 
 namespace ReasonableRTF.Models
 {
+    /// <summary>
+    /// The Conversion Result.
+    /// If an error occured <see cref="Error"/> will be not <see cref="RtfError.OK"/> and <see cref="Exception"/> might be set to an <see cref="System.Exception"/>.
+    /// </summary>
     public readonly struct RtfResult
     {
+        /// <summary>
+        /// Initializes the <see cref="RtfResult"/>.
+        /// </summary>
+        /// <param name="error">The <see cref="RtfError"/>.</param>
+        /// <param name="bytePositionOfError">The Position where the <paramref name="error"/> or <paramref name="exception"/> occured.</param>
+        /// <param name="exception">The <see cref="System.Exception"/>, which occured.</param>
+        /// This Constructor will be used if a Error occured and not if everything is fine.
         internal RtfResult(RtfError error, int bytePositionOfError, Exception? exception)
         {
             Text = "";
@@ -36,7 +47,10 @@ namespace ReasonableRTF.Models
             BytePositionOfError = bytePositionOfError;
             Exception = exception;
         }
-
+        /// <summary>
+        /// Initializes the <see cref="RtfResult"/>.
+        /// </summary>
+        /// <param name="text">The extracted Text.</param>
         internal RtfResult(string text)
         {
             Text = text;
@@ -65,6 +79,11 @@ namespace ReasonableRTF.Models
         /// </summary>
         public Exception? Exception { get; }
 
+        /// <summary>
+        /// Gets the <see cref="RtfResult"/> as <see cref="string"/>.
+        /// If the conversion was not successfull the Error Message will be included.
+        /// </summary>
+        /// <returns>Returns the <see cref="RtfResult"/> as <see cref="string"/>.</returns>
         public override string ToString()
         {
             string error = Error == RtfError.OK ? "Success" : "Error: " + Error;

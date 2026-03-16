@@ -24,9 +24,28 @@
 
 namespace ReasonableRTF.Helper
 {
+	/// <summary>
+	/// Contains Methods, which throws an Exception.
+	/// </summary>
     internal static class ThrowHelper
     {
-        internal static void IndexOutOfRange() => throw new IndexOutOfRangeException();
-        internal static void ArgumentException(string? message, string? paramName) => throw new ArgumentException(message, paramName);
-    }
+		/// <summary>
+		/// Throws an <see cref="IndexOutOfRangeException"/>
+		/// </summary>
+		/// <exception cref="IndexOutOfRangeException"></exception>
+		internal static void IndexOutOfRange() => throw new IndexOutOfRangeException();
+		/// <summary>
+		/// Throws an <see cref="System.ArgumentException"/>
+		/// </summary>
+		/// <param name="message">The Message of the <see cref="System.ArgumentException"/>.</param>
+		/// <param name="paramName">The Name of the Parameter, which was invalid.</param>
+		/// <exception cref="System.ArgumentException"></exception>
+		internal static void ArgumentException(string? message, string? paramName) => throw new ArgumentException(message, paramName);
+		/// <summary>
+        /// Throws an <see cref="System.IO.IOException"/>
+        /// </summary>
+        /// <param name="message">The Message of the <see cref="System.IO.IOException"/>.</param>
+        /// <exception cref="System.IO.IOException"></exception>
+        internal static void IOException(string message) => throw new IOException(message);
+	}
 }

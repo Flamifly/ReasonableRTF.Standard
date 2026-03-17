@@ -8,40 +8,6 @@ namespace ReasonableRTF.Extensions
 	internal static class StreamExtension
 	{
 		/// <summary>
-		/// Converts the <paramref name="stream"/> to an <see cref="byte"/>[].
-		/// </summary>
-		/// <param name="stream">The <see cref="Stream"/> to convert.</param>
-		/// <returns>Returns the <see cref="byte"/>[] of the <paramref name="stream"/>.</returns>
-		/// <exception cref="IOException"></exception>
-		internal static byte[] ToBytes(this Stream stream)
-		{
-			byte[] bytes;
-			if (stream is MemoryStream ms)
-			{
-				// call to throw if to large > 2GB
-				_ = GetLength(ms);
-				bytes = GetMemoryStreamBytes(ms);
-			}
-			else if (stream is FileStream fs)
-			{
-				int length = fs.GetLength();
-				bytes = new byte[length];
-				fs.ReadAll(bytes, length);
-			}
-			else
-			{
-				using (ms = new MemoryStream())
-				{
-					stream.CopyTo(ms);
-					// call to throw if to large
-					_ = GetLength(ms);
-					bytes = GetMemoryStreamBytes(ms);
-				}
-			}
-			return bytes;
-		}
-
-		/// <summary>
 		/// Reads exactly bytesToRead out of stream, unless it is out of bytes.
 		/// </summary>
 		/// <exception cref="IOException"></exception>
@@ -68,14 +34,55 @@ namespace ReasonableRTF.Extensions
 		}
 
 		/// <summary>
+		/// Converts the <paramref name="stream"/> to an <see cref="byte"/>[].
+		/// </summary>
+		/// <param name="stream">The <see cref="Stream"/> to convert.</param>
+		/// <returns>Returns the <see cref="byte"/>[] of the <paramref name="stream"/>.</returns>
+		/// <exception cref="IOException"></exception>
+		internal static byte[] ToBytes(this Stream stream)
+		{
+			byte[] bytes;
+			if (stream is MemoryStream ms)
+			{
+				// call to throw if to large > 2GB
+				_ = ms.GetLength(true);
+				bytes = GetMemoryStreamBytes(ms);
+			}
+			else if (stream is FileStream fs)
+			{
+				// this logic differs a little bit from ReasonableRTF since it uses only the readable length
+				// and don't assume the stream is at the beginning.
+				int length = fs.GetLength(false);
+				bytes = new byte[length];
+				fs.ReadAll(bytes, length);
+			}
+			else
+			{
+				using (ms = new MemoryStream())
+				{
+					stream.CopyTo(ms);
+					// call to throw if to large
+					_ = ms.GetLength(true);
+					bytes = GetMemoryStreamBytes(ms);
+				}
+			}
+			return bytes;
+		}
+
+		/// <summary>
 		/// Gets the remaining length of the <paramref name="stream"/>.
 		/// </summary>
 		/// <param name="stream">The <see cref="Stream"/>, which Length should be returned.</param>
+		/// <param name="ignorePosition">Specifies if the Position in the <paramref name="stream"/> won't be used to calculate the remaining length.</param>
 		/// <returns>Returns the remaining length of the <paramref name="stream"/>.</returns>
 		/// <exception cref="IOException"></exception>
-		internal static int GetLength(this Stream stream)
+		internal static int GetLength(this Stream stream, bool ignorePosition)
 		{
-			long readableLength = stream.Length - stream.Position;
+			long readableLength = stream.Length;
+			if (!ignorePosition)
+			{
+				readableLength -= stream.Position;
+			}
 			if (readableLength > int.MaxValue)
 			{
 				ThrowHelper.IOException("Stream length was over 2 gigabytes. This is not supported.");

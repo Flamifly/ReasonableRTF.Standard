@@ -33,8 +33,12 @@ namespace ReasonableRTF.Models
         // The Max Length of an Array 
         // Copy of https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/Array.cs
         private const int MaxLength = 0X7FFFFFC7;
-        internal const int PropertiesLen = 4;
-        private const int DefaultCapacity = 100;
+#if NET5_0_OR_GREATER
+        private static readonly int PropertiesLen = Enum.GetValues<Property>().Length;
+#else
+		private static readonly int PropertiesLen = Enum.GetValues(typeof(Property)).Length;
+#endif
+		private const int DefaultCapacity = 100;
         private int Capacity;
 
         private bool[] _skipDestinations;
@@ -51,11 +55,6 @@ namespace ReasonableRTF.Models
         }
 #nullable restore
 
-        [MemberNotNull(
-            nameof(_skipDestinations),
-            nameof(_inFontTables),
-            nameof(_symbolFonts),
-            nameof(Properties))]
         private void Init()
         {
             Count = 0;
@@ -75,7 +74,6 @@ namespace ReasonableRTF.Models
         private void Grow()
         {
             int oldMaxGroups = Capacity;
-
             int newCapacity = Capacity * 2;
             if ((uint)newCapacity > MaxLength) newCapacity = MaxLength;
 

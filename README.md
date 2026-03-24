@@ -1,3 +1,7 @@
+> [!WARNING]  
+> This Project has been archived since the original Project support .NET Standard now.
+> Use https://github.com/FenPhoenix/ReasonableRTF/tree/main instead. This Project won't be maintained anymore.
+
 # ReasonableRTF - Fast RTF to Plain Text Converter 🚀
 
 A lightweight and performant C# library designed for rapidly converting **Rich Text Format (RTF)** files into **plain text**.
